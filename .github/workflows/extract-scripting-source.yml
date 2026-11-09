@@ -3,7 +3,7 @@ name: Extract Scripting source
 on:
   push:
     paths:
-      - 'Scripting/_packages/DouyinShareDownloader-source.tar.xz'
+      - 'Scripting/_packages/DouyinShareDownloader-source.b64.part6'
   workflow_dispatch:
 
 permissions:
@@ -14,11 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Extract verified source archive
+      - name: Rebuild and verify uploaded Scripting source
         run: |
+          cat Scripting/_packages/DouyinShareDownloader-source.b64.part{1..6} | base64 --decode > /tmp/douyin-source.tar.xz
+          echo "a1ead2aaa02c2325ea9353713f1378e15843c078badacd7ad2521378793575a4  /tmp/douyin-source.tar.xz" | sha256sum --check
           python3 - <<'PY'
-          import io, pathlib, tarfile
-          source = pathlib.Path('Scripting/_packages/DouyinShareDownloader-source.tar.xz')
+          import pathlib, tarfile
           target = pathlib.Path('Scripting/DouyinShareDownloader')
           target.mkdir(parents=True, exist_ok=True)
           allowed = {
@@ -27,20 +28,21 @@ jobs:
               'services/preferences.ts', 'services/file-actions.ts',
               'services/douyin.ts',
           }
-          with tarfile.open(source, mode='r:xz') as archive:
-              for item in archive:
-                  if item.name not in allowed or not item.isfile():
-                      raise ValueError(f'Unexpected archive entry: {item.name}')
+          with tarfile.open('/tmp/douyin-source.tar.xz', mode='r:xz') as archive:
+              members = archive.getmembers()
+              if {m.name for m in members} != allowed or any(not m.isfile() for m in members):
+                  raise ValueError("Unexpected source archive entries")
+              for item in members:
                   output = target / item.name
                   output.parent.mkdir(parents=True, exist_ok=True)
                   output.write_bytes(archive.extractfile(item).read())
           PY
-      - name: Commit extracted files
+      - name: Commit extracted source
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Scripting/DouyinShareDownloader/
           if ! git diff --cached --quiet; then
-            git commit -m "Extract Douyin Scripting project source"
+            git commit -m "Publish Scripting Douyin downloader source"
             git push
           fi
