@@ -1,0 +1,13 @@
+#!name=NodeSeek 每日签到（Token 获取可开关）
+#!desc=Sliverkiss 的 NodeSeek 签到脚本。默认关闭 Token 获取与对应域名 MITM；每天 09:15 签到。获取 Token 时在「编辑参数」中将 TokenHost 从 off 改为 www，完成后改回 off。
+#!arguments=TokenHost:off
+#!arguments-desc=Token 获取开关：TokenHost 填 off = 关闭（默认；不对 www.nodeseek.com 添加 MITM，不抓取 Token）；填 www = 开启（登录后打开个人名片获取 Token）。获取成功后改回 off。每日 09:15 签到独立运行。
+
+[Script]
+# TokenHost=off 时，匹配的是 off.nodeseek.com，不会抓取 www.nodeseek.com 的请求；切换到 www 时启用抓取。
+NodeSeek 获取 Token = type=http-response,pattern=^https:\/\/{{{TokenHost}}}\.nodeseek\.com\/api\/account\/getInfo\/.+\?readme=1&signature=1&phone=1,requires-body=true,script-path=https://gist.githubusercontent.com/Sliverkiss/2b5acc2c4960dd06618c6912302c2c7f/raw/nodeseek.js,timeout=60
+NodeSeek 每日签到 = type=cron,cronexp="15 9 * * *",wake-system=true,script-path=https://gist.githubusercontent.com/Sliverkiss/2b5acc2c4960dd06618c6912302c2c7f/raw/nodeseek.js,timeout=60
+
+[MITM]
+# TokenHost=off：只追加 off.nodeseek.com；改为 www 时才追加 www.nodeseek.com。
+hostname = %APPEND% {{{TokenHost}}}.nodeseek.com
