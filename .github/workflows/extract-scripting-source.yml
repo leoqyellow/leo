@@ -1,0 +1,46 @@
+name: Extract Scripting source
+
+on:
+  push:
+    paths:
+      - 'Scripting/_packages/DouyinShareDownloader-source.tar.xz'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract verified source archive
+        run: |
+          python3 - <<'PY'
+          import io, pathlib, tarfile
+          source = pathlib.Path('Scripting/_packages/DouyinShareDownloader-source.tar.xz')
+          target = pathlib.Path('Scripting/DouyinShareDownloader')
+          target.mkdir(parents=True, exist_ok=True)
+          allowed = {
+              'index.tsx', 'intent.tsx', 'script.json',
+              'utils/common.ts', 'services/history.ts',
+              'services/preferences.ts', 'services/file-actions.ts',
+              'services/douyin.ts',
+          }
+          with tarfile.open(source, mode='r:xz') as archive:
+              for item in archive:
+                  if item.name not in allowed or not item.isfile():
+                      raise ValueError(f'Unexpected archive entry: {item.name}')
+                  output = target / item.name
+                  output.parent.mkdir(parents=True, exist_ok=True)
+                  output.write_bytes(archive.extractfile(item).read())
+          PY
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Scripting/DouyinShareDownloader/
+          if ! git diff --cached --quiet; then
+            git commit -m "Extract Douyin Scripting project source"
+            git push
+          fi
