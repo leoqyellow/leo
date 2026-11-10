@@ -1,0 +1,48 @@
+#!name=Paperclip · Surge 签到合集
+#!desc=转换自 MaYIHEI/paperclip Loon 插件。按原定时时间执行，汇总每天 11:30；NodeSeek 已存在独立模块，故跳过。通过 Surge 脚本界面逐项禁用不需要的任务；此模块不包含 Cookie 抓取或 MITM。
+#!author=MaYIHEI (原脚本), ChatGPT (Surge 配置转换)
+#!homepage=https://github.com/MaYIHEI/paperclip
+#!icon=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/paperclip-checkin.png
+
+# 说明：源 Loon 的 merge 参数是对象，Surge 不能直接传递。
+# 因而保留签到汇总任务，但原始 JS 可能仍单独发送通知；签到任务的业务逻辑未被修改。
+# 如已安装其他相同签到任务，应在 Surge 中禁用重复任务。
+# 此文件不包含 NodeSeek 签到（原仓库现有 nodeseek.sgmodule 已覆盖）。
+# cronexp 支持原作者的 5/6 字段表达式，保持时间不变。
+
+[Script]
+签到汇总 = type=cron,cronexp="30 11 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/summary/summary.js,timeout=60
+微博超话签到 = type=cron,cronexp="0 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/weibotalk/weibotalk.js,timeout=60
+腾讯视频签到 = type=cron,cronexp="10 0 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/tenvideo/tenvideo.js,timeout=60
+米游社签到 = type=cron,cronexp="13 6 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/mihoyo/mihoyo.js,timeout=60
+一点万象签到 = type=cron,cronexp="37 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/newmixc/newmixc.js,timeout=60
+小米商城签到 = type=cron,cronexp="15 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/mishop/mishop.js,timeout=60
+小米抽奖签到 = type=cron,cronexp="30 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/milottery/milottery.js,timeout=360
+有品签到 = type=cron,cronexp="5 9 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/youpin/youpin.js,timeout=60
+龙湖App签到 = type=cron,cronexp="0-59/19 8-10 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/lhtj/lhtj.js,timeout=60
+QQ音乐每日任务 = type=cron,cronexp="0 30 7 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/qqmusic/qqmusic.js,timeout=60
+QQ音乐定时金币 = type=cron,cronexp="0 * 9-10 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/qqmusic/qqmusic.js,timeout=60
+QQ音乐红包雨 = type=cron,cronexp="0 5 0,8,12,16,20,22 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/qqmusic/qqmusic.js,timeout=60
+万达电影签到 = type=cron,cronexp="20 9 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wanda/wanda.js,timeout=60
+听听FM签到 = type=cron,cronexp="20 9 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/tingtingfm/tingtingfm.js,timeout=60
+WPS签到 = type=cron,cronexp="0 10 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/wps/wps.js,timeout=120
+扫描全能王签到 = type=cron,cronexp="15 10 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/camscanner/camscanner.js,timeout=60
+追觅签到 = type=cron,cronexp="33 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/dreame/dreame.js,timeout=60
+灵狐灵购签到 = type=cron,cronexp="33 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/linghu/linghu.js,timeout=60
+123社区签到 = type=cron,cronexp="10 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/pan1/pan1.js,timeout=60
+AgentRouter签到 = type=cron,cronexp="0 9 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/agentrouter/agentrouter.js,timeout=300
+网上国网签到 = type=cron,cronexp="30 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/sgcc/sgcc.js,timeout=60
+中国移动签到 = type=cron,cronexp="20 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/cmcc/cmcc.js,timeout=60
+小黑盒签到 = type=cron,cronexp="20 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/heybox/heybox.js,timeout=60
+百度网盘签到 = type=cron,cronexp="15 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/baidunetdisk/baidunetdisk.js,timeout=60
+徕芬签到 = type=cron,cronexp="40 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/laifen/laifen.js,timeout=60
+泡泡玛特签到 = type=cron,cronexp="0 9 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/ppmt/ppmt.js,timeout=60
+途虎养车签到 = type=cron,cronexp="17 7 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/tuhu/tuhu.js,timeout=60
+海底捞签到 = type=cron,cronexp="23 7 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/haidilao/haidilao.js,timeout=60
+惠省红包墙签到 = type=cron,cronexp="5 0 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/huisheng/huisheng.js,timeout=60
+名创优品签到 = type=cron,cronexp="37 7 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/miniso/miniso.js,timeout=60
+龙德广场签到 = type=cron,cronexp="5 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/longde/longde.js,timeout=60
+龙湖天街签到 = type=cron,cronexp="0 9 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/lhtj/lhtj.js,timeout=60
+味多美签到 = type=cron,cronexp="10 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/wedome/wedome.js,timeout=60
+北京华联签到 = type=cron,cronexp="8 8 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/bhg/bhg.js,timeout=60
+林里签到 = type=cron,cronexp="0 10 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/miniprogram/linli/linli.js,timeout=60
