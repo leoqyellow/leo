@@ -1,0 +1,26 @@
+#!name=Claude 专属分流
+#!desc=Claude / Anthropic 核心域名走指定策略；只拦截这些域名的 UDP 443，避免全局阻断 QUIC。需要在主配置中预先创建对应策略组。
+#!arguments=ClaudePolicy:Claude
+#!arguments-desc=ClaudePolicy：填入主配置中已存在的策略组或代理名称（默认 Claude）。模块不能自动创建策略组。
+
+[Rule]
+# 仅针对 Claude / Anthropic 的 UDP 443 拦截（促使支持回退的客户端尝试 TCP）。
+# 原脚本的全局 UDP 443 REJECT 会影响其他应用，因此改为按域名限制。
+AND,((PROTOCOL,UDP),(DEST-PORT,443),(OR,((DOMAIN-SUFFIX,anthropic.com),(DOMAIN-SUFFIX,clau.de),(DOMAIN-SUFFIX,claude.ai),(DOMAIN-SUFFIX,claude.com),(DOMAIN-SUFFIX,claudemcpclient.com),(DOMAIN-SUFFIX,claudemcpcontent.com),(DOMAIN-SUFFIX,claudeusercontent.com)))),REJECT
+
+# Claude / Anthropic 核心服务、应用和用户内容
+DOMAIN-SUFFIX,anthropic.com,{{{ClaudePolicy}}}
+DOMAIN-SUFFIX,clau.de,{{{ClaudePolicy}}}
+DOMAIN-SUFFIX,claude.ai,{{{ClaudePolicy}}}
+DOMAIN-SUFFIX,claude.com,{{{ClaudePolicy}}}
+DOMAIN-SUFFIX,claudemcpclient.com,{{{ClaudePolicy}}}
+DOMAIN-SUFFIX,claudemcpcontent.com,{{{ClaudePolicy}}}
+DOMAIN-SUFFIX,claudeusercontent.com,{{{ClaudePolicy}}}
+
+# 账号登录 / 鉴权
+DOMAIN,anthropic.auth0.com,{{{ClaudePolicy}}}
+
+# 官网静态资源与特定 CDN 主机
+DOMAIN,servd-anthropic-website.b-cdn.net,{{{ClaudePolicy}}}
+DOMAIN,anthropic-com.ghost.io,{{{ClaudePolicy}}}
+DOMAIN,anthropic.com.cdn.cloudflare.net,{{{ClaudePolicy}}}
