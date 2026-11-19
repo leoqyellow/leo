@@ -1,0 +1,25 @@
+#!name=关闭 IPv6 与加密 DNS
+#!desc=独立的全局模块：禁用 Surge IPv6/VIF，接管被 Surge 捕获的 53 端口 DNS，以 DoH 查询并按指定策略转发。可能影响局域网和网络登录环境。
+#!arguments=DNSPolicy:Claude
+#!arguments-desc=DNSPolicy：填入已有策略组或代理名称。强烈建议出口节点用 IP 地址；若出口代理需要域名解析，Surge 的 DoH 防循环机制可能回退直连。
+
+[General]
+# 关闭 Surge 的完整 IPv6 与虚拟网卡 IPv6 接管
+ipv6 = false
+ipv6-vif = disabled
+
+# 传统 DNS 仅用于 DoH 连接的引导解析与连通性检测
+dns-server = 223.5.5.5, 119.29.29.29
+
+# 真正的常规域名解析使用 DoH（非 Mihomo nameserver 格式）
+encrypted-dns-server = https://cloudflare-dns.com/dns-query, https://dns.google/dns-query
+encrypted-dns-follow-outbound-mode = true
+
+# 仅接管 Surge 实际捕获到的 TCP/UDP 53 端口请求；
+# 无法拦截所有应用自行发起的 DoH/DoQ/DoT
+hijack-dns = *:53
+
+[Rule]
+# Surge 自身产生的 DoH 请求采用指定策略
+# 注意：若代理服务器配置为域名且需要当前 DNS 先解析，Surge 为避免循环可能直连 DoH
+PROTOCOL,DOH,{{{DNSPolicy}}}
