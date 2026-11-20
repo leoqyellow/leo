@@ -1,0 +1,21 @@
+#!name=中国移动签到 · Surge 独立模块
+#!desc=MaYIHEI/paperclip 中国移动签到。中文参数：#=关闭，开=启用。Cookie 抓取默认关闭，MITM 域名默认不解密；抓取成功后请恢复关闭。签到默认关闭，防止与 Paperclip 合集重复签到。
+#!author=MaYIHEI (脚本), ChatGPT (Surge 模块整理)
+#!homepage=https://github.com/MaYIHEI/paperclip
+#!icon=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/cmcc.png
+#!arguments=Cookie抓取:#,每日签到:#,抓取域名:disabled.invalid
+#!arguments-desc=Cookie抓取：# 关闭 / 开 开启三条抓取规则；每日签到：# 关闭 / 开 启用每天08:20签到。首次抓取时，还需将「抓取域名」填写为 client.app.coc.10086.cn, clientaccess.10086.cn, h5.bj.10086.cn；抓取完成后将 Cookie抓取 改回 #，抓取域名改回 disabled.invalid。不要留空，空值可能恢复默认。
+
+# 【重要】抓取 Cookie 需要同时开启「Cookie抓取」并设置真实 MITM 域名。
+# 默认只解密虚拟主机 disabled.invalid，不解密中国移动的业务域名。
+# 完成登录凭证抓取后恢复 Cookie抓取=#，抓取域名=disabled.invalid。
+# 如果同时启用 paperclip-checkin.sgmodule 的「中国移动签到」，请只保留一个定时任务。
+
+[Script]
+{{{Cookie抓取}}}中国移动 Cookie = type=http-request,pattern=^https:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/[LD]N\/uam(onekey|randcode)login\/autoLogin,requires-body=true,max-size=0,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/cmcc/cmcc.js,img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/cmcc.png
+{{{Cookie抓取}}}中国移动 Cookie 2 = type=http-request,pattern=^https:\/\/clientaccess\.10086\.cn\/biz-orange\/BN\/scoreQueryService\/getScoreQuery,requires-body=true,max-size=0,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/cmcc/cmcc.js,img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/cmcc.png
+{{{Cookie抓取}}}中国移动 Cookie 3 = type=http-request,pattern=^https:\/\/h5\.bj\.10086\.cn\/ActSignIn2023\/doPrize,requires-body=false,max-size=0,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/cmcc/cmcc.js,img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/cmcc.png
+{{{每日签到}}}中国移动签到 = type=cron,cronexp="20 8 * * *",wake-system=true,timeout=60,script-path=https://raw.githubusercontent.com/MaYIHEI/paperclip/refs/heads/main/app/cmcc/cmcc.js,img-url=https://raw.githubusercontent.com/MaYIHEI/pin/refs/heads/main/app/cmcc.png
+
+[MITM]
+hostname = %APPEND% {{{抓取域名}}}
